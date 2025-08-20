@@ -61,7 +61,7 @@ export default function ParentAnalyse({ analyses, startNewAnalysis }) {
             ) : (
               <div
                 key={idx}
-                className="relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-[1.03] transition-transform duration-300 p-6 w-[475px] h-[240px] flex flex-col justify-between"
+                className="relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-[1.03] transition-transform duration-300 p-6 w-[475px] h-[240px ] flex flex-col justify-between"
               >
                 {/* Card header */}
                 <div className="flex items-center gap-2 mb-4">

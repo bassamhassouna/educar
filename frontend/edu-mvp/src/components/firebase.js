@@ -7,8 +7,11 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyC1m5bFTwK9hAo2efvftmw9VtRTSKTILZw",
+  apiKey: apiKey ,
   authDomain: "educar-f90be.firebaseapp.com",
   projectId: "educar-f90be",
   storageBucket: "educar-f90be.firebasestorage.app",
@@ -20,6 +23,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+auth.languageCode = "en";
 const provider = new GoogleAuthProvider();
 
 export { auth, provider, signInWithPopup };
