@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import Upload from "./components/Upload";
-import Results from "./components/Results";
 import SplashScreen from "./components/SplashScreen";
 import SignUpScreen from "./components/SignUpScreen";
-import LogInScreen from "./components/LogInScreen";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   const [screen, setScreen] = useState('splash')
@@ -14,32 +12,21 @@ const App = () => {
   console.log("FormData object (for backend):", data.formData);
 
   setScreen("results");
-};
+  };
 
-  const FloatingIsland = ( {element}) => {
-    return(
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-4xl px-4">
-        <div className="bg-white shadow-sm rounded-md border-2 border-gray-300 mb-6 p-6">
-          {element}
-        </div>
-      </div>
-    </div>
-    )
-  }
+
 
   return (
     <div>
       {screen === 'splash' && (
         <SplashScreen
-          onNext={() => setScreen("sign_in")}
-          onHasAccount={() => setScreen("log_in")}
+          onNext={() => setScreen("sign_up")}
         />
       )}
-      {screen === "sign_in" && <SignUpScreen />}
-      {screen === "log_in" && <LogInScreen />}
-      {screen === "upload" && <FloatingIsland element={<Upload onUploadComplete={handleUploadComplete}/>} />}
-      {screen === "results" && <FloatingIsland element={<Results />} />}
+      {screen === "sign_up" && <SignUpScreen onNext={() => setScreen("dashboard")} />}
+      {screen === "dashboard" && <Dashboard onUpload={() => setScreen("upload")}/>}
+      {screen === "upload" && <UploadScreen goBack={() => setScreen("dashboard")} upload={() => setScreen("results")}/>}
+      {screen === "results" && <Results />}
     </div>
   );
 };

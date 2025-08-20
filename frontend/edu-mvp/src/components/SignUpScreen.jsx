@@ -1,27 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { auth, provider, signInWithPopup } from "./firebase";
 
-const SignInScreen = () => {
+const SignInScreen = ({ onNext }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(true); // ✅ New
 
-  const handleSignIn = (e) => {
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        onNext(user);
+      } else {
+        setLoading(false); // ✅ Show screen only if not logged in
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  const handleSignUp = (e) => {
     e.preventDefault();
-
-    // 🔐 TODO: Send `email` and `password` to your backend or auth provider
-    console.log("Signing in with:", email, password);
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        onNext(userCredential.user);
+      })
+      .catch((error) => {
+        console.error("Error during sign-up:", error);
+        // optionally show error to user
+      });
   };
 
-  const handleGoogleSignIn = () => {
-    // 🔐 TODO: Trigger Google Sign-In flow (e.g. Firebase or OAuth redirect)
-    console.log("Google Sign-In triggered");
+
+  const handleGoogleSignUp = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log("User Info:", result.user);
+        onNext(result.user); // 👈 Go to next screen after login
+      })
+      .catch((error) => {
+        console.error("Error during sign-in:", error);
+      });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white px-4">
       <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md text-center space-y-6">
-        {/* Logo or Icon */}
         <div className="text-3xl bg-[#426ED8] text-white w-12 h-12 mx-auto rounded-full flex items-center justify-center shadow">
-          +
+          &
         </div>
 
         <h2 className="text-xl font-semibold text-gray-800">
@@ -31,7 +65,7 @@ const SignInScreen = () => {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </p>
 
-        <form onSubmit={handleSignIn} className="space-y-4 text-left">
+        <form onSubmit={handleSignUp} className="space-y-4 text-left">
           <div>
             <label className="block text-sm text-gray-600 mb-1">Email</label>
             <input
@@ -56,7 +90,10 @@ const SignInScreen = () => {
 
           <div className="flex justify-between items-center text-sm">
             <div></div>
-            <button type="button" className="text-[#426ED8] hover:underline hover:cursor-pointer">
+            <button
+              type="button"
+              className="text-[#426ED8] hover:underline hover:cursor-pointer"
+            >
               Forgot password?
             </button>
           </div>
@@ -81,10 +118,10 @@ const SignInScreen = () => {
         {/* Social Buttons */}
         <div className="flex justify-center space-x-4">
           <button
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleSignUp}
             className="p-2 bg-white border border-gray-300 rounded-full hover:shadow-md transition hover:cursor-pointer"
           >
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" className="w-5 h-5" />
+            <img src="google.svg" alt="Google" className="w-5 h-5" />
           </button>
         </div>
       </div>
